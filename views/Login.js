@@ -1,38 +1,45 @@
 import React, {useState} from 'react';
 import {Alert, ScrollView, Text, View} from 'react-native';
 import {Button, Card, TextInput} from 'react-native-paper';
-import {useNavigation} from '@react-navigation/native';
-
 import * as services from '../services/authServices';
+import {useNavigation} from '@react-navigation/native';
+import {signIn} from '../actions/authActions';
+import {useDispatch} from 'react-redux'; //Hook!
 
 export default function Login() {
-  //função para utilizar a navegação dos componentes
+  //função para utilizar a navegação dos componentes..
   const navigation = useNavigation();
 
   //declarando as variaveis e funções para captura de cada campo da tela..
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
-  //declarando as variaveis e funções para captura de cada campo da tela
+  //declarando as variaveis e funções para exibir os resultados da API..
   const [mensagem, setMensagem] = useState('');
   const [erros, setErros] = useState({});
 
+  //declarando o objeto dispatch
+  const dispatch = useDispatch();
+
   //função executada ao pressionar o botão..
   const handleButtonPress = () => {
-    //limpar mensagem e erros
+    //limpar mensagem e erros..
     setMensagem('');
     setErros({});
 
-    //realizar a chamada para a API
+    //realizando a chamada para a API..
     // eslint-disable-next-line prettier/prettier
-    services.post({email, senha }).then(
-        data => {
-          Alert.alert('Seja bem vindo ao aplicativo!', data.mensagem);
+        services.post({
+        email,
+        senha,
+      })
+      .then(data => {
+        Alert.alert('Seja bem vindo ao Aplicativo!', data.mensagem);
 
-          navigation.navigate('dashboard');
-        },
-        //navegar para tela de dashborad
-      )
+        dispatch(signIn(data.accessToken));
+
+        navigation.navigate('dashboard');
+      })
       .catch(e => {
         var result = e.response;
         switch (result.status) {
@@ -68,13 +75,18 @@ export default function Login() {
           {mensagem ? (
             <View style={{marginBottom: 20}}>
               <Text
-                style={{fontSize: 16, fontWeight: 'bold', color: '#d9534f'}}>
+                style={{
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                  color: '#d9534f',
+                }}>
                 {mensagem}
               </Text>
             </View>
           ) : (
             <View />
           )}
+
           <TextInput
             label="Email do usuário"
             keyboardType="email-address"
@@ -90,7 +102,13 @@ export default function Login() {
             {erros.Email ? (
               erros.Email.map((value, i) => (
                 <View key={i}>
-                  <Text style={{color: '#d9534f', fontSize: 14}}>{value}</Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#d9534f',
+                    }}>
+                    {value}
+                  </Text>
                 </View>
               ))
             ) : (
@@ -103,9 +121,6 @@ export default function Login() {
             keyboardType="default"
             secureTextEntry={true}
             mode="outlined"
-            style={{
-              marginBottom: 20,
-            }}
             value={senha}
             onChangeText={e => setSenha(e)}
           />
@@ -117,7 +132,13 @@ export default function Login() {
             {erros.Senha ? (
               erros.Senha.map((value, i) => (
                 <View key={i}>
-                  <Text style={{color: '#d9534f', fontSize: 14}}>{value}</Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#d9534f',
+                    }}>
+                    {value}
+                  </Text>
                 </View>
               ))
             ) : (

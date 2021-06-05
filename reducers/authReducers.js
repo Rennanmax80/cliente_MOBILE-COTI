@@ -10,9 +10,8 @@ const authReducers = (state = initialState, action) => {
       //gravar o TOKEN no state
       return {
         ...state,
-        accessToken: action.accessToken,
+        accessToken: action.data,
       };
-      break;
 
     case actions.SIGN_OUT: //não autenticado!
       return {
