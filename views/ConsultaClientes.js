@@ -6,10 +6,15 @@ import * as services from '../services/clienteServices';
 import { useSelector } from 'react-redux';
 import Header from '../components/Header';
 
+
+import {useNavigation} from '@react-navigation/native';
+
 export default function ConsultaClientes() {
 
     const [clientes, setClientes] = useState([]);
     const accessToken = useSelector(state => state.auth.accessToken);
+
+    const navigation = useNavigation();
 
     const consultarClientes = () => {
         services.getAll(accessToken)
@@ -58,10 +63,10 @@ export default function ConsultaClientes() {
 
     useEffect(() => {
         consultarClientes();
-    }, []);
+    });
 
     return (
-        <ScrollView>
+        <ScrollView style={{backgroundColor: '#fff'}}>
             <Header />
             <Card>
                 <Card.Title
@@ -93,9 +98,21 @@ export default function ConsultaClientes() {
                                                     {item.email}
                                                 </Text>
                                             </View>
+                                            <View>
+                                                <Text>
+                                                    Cadastrado em: {item.dataCadastro}
+                                                </Text>
+                                            </View>
+                                            <View>
+                                                <Text>
+                                                    Modificado em: {item.dataUltimaAlteracao}
+                                                </Text>
+                                            </View>
                                         </Card.Content>
                                         <Card.Actions>
-                                            <Button icon="lead-pencil" mode="text">
+                                            <Button icon="lead-pencil" mode="text"
+                                            onPress={() => navigation.navigate('EdicaoClientes', {item}) }
+                                            >
                                                 Editar
                                             </Button>
                                             <Button icon="delete" mode="text" color="#d9534f"

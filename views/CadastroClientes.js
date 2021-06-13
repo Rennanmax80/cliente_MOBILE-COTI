@@ -50,7 +50,7 @@ export default function CadastroClientes() {
     };
 
     return (
-        <ScrollView>
+        <ScrollView style={{backgroundColor: '#fff'}}>
             <Header />
             <Card>
                 <Card.Title
